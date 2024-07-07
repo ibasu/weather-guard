@@ -1,0 +1,60 @@
+openapi: 3.0.2
+info:
+  title: Weather API
+  description: "Vanguard's Weather API"
+#  termsOfService: http://swagger.io/terms/
+  contact:
+    email: admin@vanguard.com.au
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1-SNAPSHOT
+externalDocs:
+  description: OpenWeatherMap service
+  url: http://openweathermap.org/current#name
+servers:
+  - url: https://reflectoring.swagger.io/v2
+#tags:
+#  - name: user
+#    description: Operations about user
+#    externalDocs:
+#      description: Find out more about our store
+#      url: http://swagger.io
+paths:
+  /weather:
+    get:
+      tags:
+        - weather service
+      summary: Fetch Weather Details by country and city
+      description: Fetch Weather Details by country and city
+      operationId: checkWeather
+      parameters:
+        - in: query
+          name: country
+          description: 'The name of the country for which the weather needs to be checked'
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: city
+          description: 'The name of the city for which the weather needs to be checked'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Weather'
+        404:
+          description: Weather for the requested country and city not found
+          content: {}
+components:
+  schemas:
+    Weather:
+      type: object
+      properties:
+        description:
+          type: string

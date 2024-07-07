@@ -1,0 +1,152 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.2.1")
+	}
+}
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.7'
+	id 'io.spring.dependency-management' version '1.1.5'
+	id "org.jsonschema2pojo" version "1.2.1"
+	id 'jacoco'
+}
+
+apply plugin: 'jsonschema2pojo'
+
+//plugins {
+//	id 'java'
+//	id 'org.springframework.boot' version '3.1.0'
+//	id 'io.spring.dependency-management' version '1.1.2'
+//}
+
+group = 'au.com.vanguard.weather'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+	mavenCentral()
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir "${buildDir.absolutePath}/generated-sources/"
+		}
+	}
+
+	unitTest {
+		java.srcDirs = ['src/test/java/unit']
+		compileClasspath += sourceSets.test.runtimeClasspath
+		runtimeClasspath += sourceSets.test.runtimeClasspath
+		resources.srcDir 'src/test/resources'
+	}
+
+	blackboxTest {
+		java.srcDirs = ['src/test/java/blackbox']
+		compileClasspath += sourceSets.test.runtimeClasspath
+		runtimeClasspath += sourceSets.test.runtimeClasspath
+		resources.srcDir 'src/test/resources'
+	}
+}
+
+dependencies {
+//	implementation 'org.jsonschema2pojo:jsconschema2pojo-core:1.1.1'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0'
+	implementation 'org.flywaydb:flyway-core'
+
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+	//open api code generation
+//	swaggerCodegen 'org.openapitools:openapi-generator-cli:7.7.0'
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
+	implementation group: 'me.yaman.can', name: 'spring-boot-webflux-h2-console', version: '0.0.1'
+
+	compileOnly 'org.projectlombok:lombok'
+	compileOnly("javax.servlet:javax.servlet-api:4.0.1")
+	annotationProcessor 'org.projectlombok:lombok'
+
+	runtimeOnly 'com.h2database:h2'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation "org.wiremock:wiremock-standalone:3.0.3"
+//	testCompileOnly 'org.apiguardian:apiguardian-api:1.1.2'
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+}
+
+jacoco {
+	toolVersion = "0.8.9"
+	reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+test.doFirst {
+	systemProperty 'spring.profiles.active', 'test'
+}
+
+tasks.named('test') {
+	systemProperty 'spring.profiles.active', 'test'
+	useJUnitPlatform()
+}
+
+jsonSchema2Pojo{
+	setSourceType("json")
+	setSource(files("$projectDir/src/main/resources/json"))
+	targetDirectory = file("$buildDir/generated-sources")
+	targetPackage = "au.com.vanguard.weather.pojo"
+	generateBuilders = true
+	dateTimeType = "java.time.ZonedDateTime"
+	includeAdditionalProperties = false
+	setAnnotationStyle("none")
+}
+
+task unitTest(type: Test) {
+	description = 'Runs the unit tests.'
+	testClassesDirs = sourceSets.unitTest.output.classesDirs
+	classpath = sourceSets.unitTest.runtimeClasspath
+}
+
+task blackboxTest(type: Test) {
+	description = 'Runs the blackbox tests.'
+	testClassesDirs = sourceSets.blackboxTest.output.classesDirs
+	classpath = sourceSets.blackboxTest.runtimeClasspath
+}
+
+test.doFirst {
+	systemProperty 'spring.profiles.active', 'test'
+}
+
+tasks.named('test') {
+	systemProperty 'spring.profiles.active', 'test'
+	useJUnitPlatform()
+}
+
+springBoot {
+	buildInfo()
+}
+
+defaultTasks = ['clean', 'build']
