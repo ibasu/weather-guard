@@ -60,6 +60,12 @@ Following is the endpoints exposed by this microservice:
 - The microservice has also implemented **Rate Limiter** as per the SLA to restrict 5 requests per hour(configurable)
 - The configuration can be adjusted in the application.yml
 - The **Rate Limiter** is AOP annotation based and has been implemented in the service layer and not in web layer as only valid tokens should be considered
+- Added **jasypt** encryption. Please refer to : https://github.com/ulisesbocchio/jasypt-spring-boot?tab=readme-ov-file
+```
+Encrypt text, use the following command:
+./gradlew encryptProperties --password e.dfjksdifj+dj
+```
+
 
 ##### Validation
 - The client's API token **X-VANGUARD-API-KEY** is mandatory

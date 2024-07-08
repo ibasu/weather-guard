@@ -1,5 +1,6 @@
 package au.com.vanguard.weather.web.client;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Configuration
+@EnableEncryptableProperties
 @Getter
 @Setter
 @Slf4j
@@ -39,11 +41,6 @@ public class ClientConfiguration {
                 .filter(logRequest())
                 .build();
     }
-
-//    @Bean(name= "OpenWeatherClient")
-//    public WebClient openWeatherClient(WebClient.Builder webClientBuilder) {
-//        return WebClient.builder().baseUrl(openWeatherEndpoint).build();
-//    }
 
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {

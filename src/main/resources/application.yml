@@ -36,7 +36,7 @@ external:
   openweather:
     endpoint: https://api.openweathermap.org
     path: /data/2.5/weather?q=%s,%s&appid=%s
-    apiKey: 11a97ea2f38a2c87fb1ce12ef6870830
+    apiKey: ENC(4vM6+SknJd7R4Zj70dsuWN8N5tfW6fKuR5gler79r8Kl4UemckoI+EADxsokuM0iH7AHKo3MHCPVKtB0cA+k9KUzSSYwXvNX9TsRyRWYfos=)
     timeoutInSeconds: 3
   authhub:
     tokens: sampletoken1, sampletoken2, sampletoken3, sampletoken4, sampletoken5
@@ -46,3 +46,8 @@ infrastructure:
     limit:
       seconds: 3600
       requests: 5
+
+jasypt:
+  encryptor:
+    password: e.dfjksdifj+dj
+    algorithm: PBEWithHMACSHA512AndAES_256
