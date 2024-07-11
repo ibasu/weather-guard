@@ -110,5 +110,12 @@ curl --location 'http://localhost:8080/vanguard/api/v1/weather?country=IND&city=
   "description": "haze"
 }
 ```
+- Sample 5 tokens have been added in configuration application.yml
+- Validation has been placed which allows only those 5 sample tokens
+```yaml
+external:
+  authhub:
+    tokens: sampletoken1, sampletoken2, sampletoken3, sampletoken4, sampletoken5
+```
 
 
